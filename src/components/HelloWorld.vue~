@@ -1,0 +1,23 @@
+<template>
+  <div>
+    <h1>{{ msg }}</h1>
+    <input name="" type="file" value=""
+           accept="image/png, image/jpeg"
+           @change="image"/>
+
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'HelloWorld',
+  props: {
+    msg: String
+  },
+  data() {
+    return {
+      image: null
+    }
+  }
+}
+</script>
