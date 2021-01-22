@@ -1,14 +1,14 @@
 <template>
-<HelloWorld msg="Hello Vue 3.0 + Vite" />
+<TheGallery />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TheGallery from './components/TheGallery.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    TheGallery
   }
 }
 </script>
