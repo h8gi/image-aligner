@@ -13,24 +13,24 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import ImageEditor from './ImageEditor.vue'
-import { ref } from 'vue'
+import { ref, defineComponent } from 'vue'
 
-export default {
-  components: {
-    ImageEditor
-  },
-  setup() {
-    const fileList = ref([])
-    const onFileChange = (event) => {
-      fileList.value = [...event.target.files]
-    }
+export default defineComponent({
+    components: {
+        ImageEditor
+    },
+    setup() {
+        const fileList = ref([])
+        const onFileChange = (event: any) => {
+            fileList.value = [...event.target.files]
+        }
 
-    return {
-      fileList,
-      onFileChange
+        return {
+            fileList,
+            onFileChange
+        }
     }
-  }
-}
+})
 </script>
