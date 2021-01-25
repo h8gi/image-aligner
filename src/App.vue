@@ -1,9 +1,9 @@
 <template>
-  <TheGallery />
+<TheGallery />
 </template>
 
 <script>
-import TheGallery from './components/TheGallery.vue'
+import TheGallery from './components/TheGallery.vue';
 
 export default {
   name: 'App',

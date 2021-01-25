@@ -1,14 +1,14 @@
 <template>
   <div>
-    <h1>Image Aligner</h1>
+    <h1>Image Aligner</h1>    
     <input name="" type="file" value=""
            accept="image/png, image/jpeg"
            @change="onFileChange"
-           multiple />
+           />
 
-    <div v-for="(file, index) in fileList" :key="index">
-      <ImageEditor :file="file"></ImageEditor>
-    </div>
+    
+    <ImageEditor v-if="file" :file="file"></ImageEditor>
+
 
   </div>
 </template>
@@ -22,15 +22,17 @@ export default defineComponent({
         ImageEditor
     },
     setup() {
-        const fileList = ref([])
+        const file = ref(new File(["hello"], "", {type: "image/png"}))
         const onFileChange = (event: any) => {
-            fileList.value = [...event.target.files]
+	    if (event.target.files[0])
+		file.value = event.target.files[0]
         }
 
         return {
-            fileList,
+            file,
             onFileChange
-        }
+        }	
     }
+
 })
 </script>
