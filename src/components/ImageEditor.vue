@@ -1,67 +1,68 @@
 <template>
 <div>
-  <h4>{{ file.name }}</h4>
   <canvas ref="canvasElement" width="800" height="600"></canvas>
-  <div v-if="isUploading">uploading image...</div>
 </div>
 </template>
 
 <script lang="ts">
 import { fabric } from 'fabric'
 import { ref, onMounted, toRefs, watch, defineComponent } from 'vue'
+import utils from '../utils'
 
-const readFileAsImage = async (file: File): Promise<HTMLImageElement> => {
-    return new Promise((resolve, reject) => {
-        let reader = new FileReader()
-        reader.onload = (e: any) => {
-            let image = new Image()
-	    image.src = e.target.result
-	    image.onload = () => resolve(image)
-	    image.onerror = reject
-        }
-        reader.onerror = reject
-        reader.readAsDataURL(file)
-    })
+const onMouseWheel = (canvas: fabric.Canvas) => {
+    return (opt: any) => {
+	let delta = opt.e.deltaY
+	let zoom = canvas.getZoom()
+	zoom *= 0.99 ** delta
+	if (zoom > 20) zoom = 20
+	if (zoom < 0.01) zoom = 0.01
+	canvas.setZoom(zoom)
+	opt.e.preventDefault()
+	opt.e.stopPropagation()
+    }
 }
 
 export default defineComponent({
     props: {
-        file: {
-            type: File,
+	imageElement: {
+	    type: HTMLImageElement,
 	    required: true
-        }
+	}
     },
     setup(props, { attrs }) {
-        const { file } = toRefs(props)
+        const { imageElement } = toRefs(props)
 	const canvasElement = ref(null)
-
         let canvas: fabric.Canvas
         let image: fabric.Image
-        const isUploading = ref(false)
 
-        const uploadImage = async () => {	    
-            isUploading.value = true
-	    try {
-		canvas.clear()
-		let originalImage = await readFileAsImage(file.value)		
-		image = new fabric.Image(originalImage)	    
-		canvas.add(image)
-	    } catch (e) {
-		console.log(e)
-	    }
-            isUploading.value = false
+        const onChange = () => {
+	    canvas.clear()
+	    image = new fabric.Image(imageElement.value)
+	    image.setControlsVisibility({
+		bl: false,
+		br: false,
+		mb: false,
+		ml: false,
+		mr: false,
+		mt: false,
+		tl: false,
+		tr: false,
+		mtr: false
+	    })
+	    canvas.add(image)
         }
 
-        onMounted(async () => {	    
+        onMounted(() => {
             canvas = new fabric.Canvas(canvasElement.value)
-	    await uploadImage()
+	    canvas.on('mouse:wheel', onMouseWheel(canvas))
+	    onChange()
         })
 
-        watch(file, uploadImage)
+        watch(imageElement, onChange)
 
         return {
-            isUploading,
-	    canvasElement
+	    canvasElement,
+	    imageElement
         }
     }
 })
@@ -69,6 +70,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 canvas {
-  border: 2px solid #555;  
+  border: 2px solid #555;
 }
 </style>
