@@ -1,7 +1,7 @@
 <template>
 <div class="container">
 
-  <FileUploader @change="onFileChange" :isUploading="isUploading">
+  <FileUploader @change="onFileChange" :isUploading="isUploading" class="pb-5">
     画像をアップロード
   </FileUploader>
   <ImageEditor v-if="image" :imageElement="image"></ImageEditor>
@@ -22,7 +22,7 @@ export default defineComponent({
     },
     setup() {
         const file = ref(new File([], ""))
-	const image = ref<HTMLImageElement>()
+	const image = ref(document.createElement('img'))
 	const isUploading = ref(false)
         const onFileChange = async (event: any) => {
 	    isUploading.value = true
