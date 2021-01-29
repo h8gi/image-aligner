@@ -20,7 +20,7 @@
 <script lang="ts">
 
 import { fabric } from 'fabric'
-import { ref, onMounted, toRefs, watch, defineComponent } from 'vue'
+import { ref, onMounted, toRefs, watch, defineComponent, computed } from 'vue'
 import utils from '../utils'
 
 export default defineComponent({
@@ -34,13 +34,9 @@ export default defineComponent({
     setup(props, { attrs }) {
         const { imageElement } = toRefs(props)
 	const canvasElement = ref(null)
-        let canvas: fabric.Canvas
-        let image: fabric.Image
-
-        const onChange = () => {
-	    canvas.clear()
-	    image = new fabric.Image(imageElement.value)
-	    image.setControlsVisibility({
+	const image = computed(() => {
+	    let img = new fabric.Image(imageElement.value)
+	    img.setControlsVisibility({
 		bl: false,
 		br: false,
 		mb: false,
@@ -51,18 +47,26 @@ export default defineComponent({
 		tr: false,
 		mtr: false
 	    })
+	    return img
+	})
+        let canvas: fabric.Canvas
+	const getCircles = () => {
+	    return canvas.getObjects().filter(o => o !== image.value)
+	}
+        const onImageChange = () => {
+	    canvas.clear()
 	    // canvas.add(image)
-	    canvas.setBackgroundImage(image, canvas.renderAll.bind(canvas))
+	    canvas.setBackgroundImage(image.value, canvas.renderAll.bind(canvas))
         }
 
         onMounted(() => {
             canvas = new fabric.Canvas(canvasElement.value)
 	    canvas.on('mouse:wheel', onMouseWheel(canvas))
 	    canvas.on('mouse:down', onMouseDbclick(canvas))
-	    onChange()
+	    onImageChange()
         })
 
-        watch(imageElement, onChange)
+        watch(image, onImageChange)
         return {
 	    canvasElement,
 	    imageElement
@@ -88,18 +92,18 @@ const onMouseWheel = (canvas: fabric.Canvas) => {
 
 const onMouseDbclick = (canvas: fabric.Canvas) => {
     return (opt: any) => {
-	var im = fabric.util.invertTransform(canvas.viewportTransform)
+	if (!canvas.viewportTransform) {
+	    throw 'canvas.viewportTransform is null'
+	}
+	let im = fabric.util.invertTransform(canvas.viewportTransform)
 	var p = new fabric.Point(opt.e.offsetX, opt.e.offsetY)
 	p = fabric.util.transformPoint(p, im)
+
 	let circle = new fabric.Circle({
 	    radius: 5 / canvas.getZoom(), fill: 'red',
 	    top: p.y,
 	    left: p.x
 	})
-
-
-	console.log('client: ', opt.e.clientX, opt.e.clientY)
-	console.log('offset: ', opt.e.offsetX, opt.e.offsetY)
 
 	canvas.add(circle)
 	canvas.bringToFront(circle)
