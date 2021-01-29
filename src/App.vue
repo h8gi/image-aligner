@@ -1,7 +1,10 @@
 <template>
-<section class="section">
-  <h2 class="title">image aligner</h2>
-  <TheGallery />
+<section>
+  <div id="nav">
+    <router-link to="/">Home</router-link> |
+    <router-link to="/about">About</router-link>
+  </div>
+  <router-view></router-view>
 </section>
 </template>
 
