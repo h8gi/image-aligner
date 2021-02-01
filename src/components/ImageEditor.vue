@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="field is-grouped">
-    <div class="control">
+    <div class="control">      
       <button class="button is-primary">a</button>
     </div>
     <div class="control">
@@ -21,7 +21,6 @@
 
 import { fabric } from 'fabric'
 import { ref, onMounted, toRefs, watch, defineComponent, computed } from 'vue'
-import utils from '../utils'
 
 export default defineComponent({
     props: {
@@ -31,7 +30,7 @@ export default defineComponent({
 	}
     },
 
-    setup(props, { attrs }) {
+    setup(props) {
         const { imageElement } = toRefs(props)
 	const canvasElement = ref(null)
 	const image = computed(() => {
@@ -50,9 +49,9 @@ export default defineComponent({
 	    return img
 	})
         let canvas: fabric.Canvas
-	const getCircles = () => {
-	    return canvas.getObjects().filter(o => o !== image.value)
-	}
+	// const getCircles = () => {
+	//     return canvas.getObjects().filter(o => o !== image.value)
+	// }
         const onImageChange = () => {
 	    canvas.clear()
 	    // canvas.add(image)

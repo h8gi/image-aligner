@@ -27,3 +27,6 @@ https://jsfiddle.net/whippet71/7s5obuk2/
 ### css
 
 https://tailwindcss.com/
+
+### path resolve in dev
+https://github.com/aleclarson/vite-tsconfig-paths/

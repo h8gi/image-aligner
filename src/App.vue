@@ -7,13 +7,3 @@
   <router-view></router-view>
 </section>
 </template>
-
-<script>
-import TheGallery from './components/TheGallery.vue';
-
-export default {
-  components: {
-    TheGallery
-  }
-}
-</script>

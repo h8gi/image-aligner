@@ -1,4 +1,7 @@
 {
+  "include": [
+    "./src/**/*"
+  ]
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
@@ -6,8 +9,10 @@
     "strict": true,
     "jsx": "preserve",
     "moduleResolution": "node",
+    "allowJs": true,
     // https://vitejs.dev/guide/features.html#typescript
     "isolatedModules": true,
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    // https://github.com/vitejs/vite/issues/88#issuecomment-762415200
   }
 }
