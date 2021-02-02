@@ -4,7 +4,10 @@
     画像をアップロード
   </FileUploader>
 
-  <img alt="" :src="imageElement.src"/>
+  <figure class="image" >
+    <img alt="" :src="imageElement.src" />
+  </figure>
+
   <button v-if="imageElement.src"
 	  class="button"
 	  :class="{ 'is-loading': isCalculating }"
@@ -12,7 +15,8 @@
 	  >
     計算
   </button>
-  <canvas ref="canvasElement" width="400" height="400"></canvas>
+  <canvas ref="canvasElement"></canvas>
+  {{ isCalculating }}
 </div>
 </template>
 <script lang="ts">
@@ -59,6 +63,9 @@ export default defineComponent({
 	onMounted(async() => {
 	    if (canvasElement.value) {
 		chart = new Chart(canvasElement.value, {
+		    options: {
+			responsive: true
+		    },
 		    type: 'bar',
 		    data
 		})
@@ -66,8 +73,8 @@ export default defineComponent({
 	})
 	
 	const calc = async () => {
+	    console.log('start calc')
 	    isCalculating.value = true
-	    console.log(isCalculating.value)
 	    const newData = (await image.value).getHistograms({})
 	    data.datasets = [
 		{
@@ -85,10 +92,10 @@ export default defineComponent({
 		    data: newData[2],
 		    backgroundColor: 'blue'
 		}
-	    ]
+	    ]	    
 	    chart.update()
 	    isCalculating.value = false
-	    console.log(isCalculating.value)
+	    console.log('end calc')
 	}
 
 	return {
@@ -105,3 +112,10 @@ export default defineComponent({
 })
 
 </script>
+
+<style lang="scss" scoped>
+canvas {
+  width: 800px !important;
+  height: 400px !important;
+}
+</style>
