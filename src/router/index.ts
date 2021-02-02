@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from 'vue-router'
 import Home from '../pages/Home.vue'
 import About from '../pages/About.vue'
+import ImageJS from '../pages/ImageJS.vue'
 
 const routes = [
     {
@@ -12,6 +13,11 @@ const routes = [
         path: '/about',
         name: 'About',
         component: About
+    },
+    {
+	path: '/image-js',
+	name: 'image-js',
+	component: ImageJS
     }
 ]
 

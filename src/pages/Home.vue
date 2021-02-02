@@ -19,7 +19,7 @@ export default defineComponent({
 	FileUploader
     },
     setup() {
-        const file = ref(new File([], ""))
+        const file = ref(new File([], ''))
 	const image = ref(document.createElement('img'))
 	const isUploading = ref(false)
         const onFileChange = async (event: any) => {
