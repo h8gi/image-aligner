@@ -1,11 +1,11 @@
 <template>
 <div>
   <div class="field is-grouped">
-    <div class="control">      
-      <button class="button is-primary">a</button>
+    <div class="control">
+      <button class="button is-primary">ADD POINT</button>
     </div>
     <div class="control">
-      <button class="button is-primary">b</button>
+      <button class="button is-primary">EDIT POINT</button>
     </div>
     <div class="control">
       <button class="button is-primary">c</button>
@@ -61,7 +61,7 @@ export default defineComponent({
         onMounted(() => {
             canvas = new fabric.Canvas(canvasElement.value)
 	    canvas.on('mouse:wheel', onMouseWheel(canvas))
-	    canvas.on('mouse:down', onMouseDbclick(canvas))
+	    canvas.on('mouse:dbclick', onMouseDbclick(canvas))
 	    onImageChange()
         })
 
