@@ -1,9 +1,13 @@
 import type { UserConfig } from 'vite'
-import tsconfigPaths from 'vite-tsconfig-paths'
+import vue from '@vitejs/plugin-vue'
+import path from 'path'
 
 const config: UserConfig = {
     plugins: [
-	tsconfigPaths(),
+	vue()
     ],
+    alias: {
+	'/@/': path.resolve(__dirname, './src')
+    }
 }
 export default config

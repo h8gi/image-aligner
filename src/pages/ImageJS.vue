@@ -21,8 +21,8 @@
 </template>
 <script lang="ts">
 import { ref, defineComponent, computed, onMounted } from 'vue'
-import FileUploader from '../components/FileUploader.vue'
-import utils from '../utils'
+import FileUploader from '/@/components/FileUploader.vue'
+import utils from '/@/utils'
 
 import { Image } from 'image-js'
 import Chart  from 'chart.js'
@@ -69,9 +69,9 @@ export default defineComponent({
 		    type: 'bar',
 		    data
 		})
-	    }	    
+	    }
 	})
-	
+
 	const calc = async () => {
 	    console.log('start calc')
 	    isCalculating.value = true
@@ -92,7 +92,7 @@ export default defineComponent({
 		    data: newData[2],
 		    backgroundColor: 'blue'
 		}
-	    ]	    
+	    ]
 	    chart.update()
 	    isCalculating.value = false
 	    console.log('end calc')

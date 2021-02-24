@@ -8,8 +8,8 @@
 </template>
 
 <script lang="ts">
-import ImageEditor from '../components/ImageEditor.vue'
-import FileUploader from '../components/FileUploader.vue'
+import ImageEditor from '/@/components/ImageEditor.vue'
+import FileUploader from '/@/components/FileUploader.vue'
 import { ref, defineComponent } from 'vue'
 import utils from '../utils'
 

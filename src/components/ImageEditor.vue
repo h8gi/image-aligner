@@ -18,7 +18,6 @@
 </template>
 
 <script lang="ts">
-
 import { fabric } from 'fabric'
 import { ref, onMounted, toRefs, watch, defineComponent, computed } from 'vue'
 
