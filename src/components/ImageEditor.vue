@@ -1,14 +1,12 @@
 <template>
 <div>
   <div class="field is-grouped">
-    <div class="control">
-      <button class="button is-primary">ADD POINT</button>
-    </div>
-    <div class="control">
-      <button class="button is-primary">EDIT POINT</button>
-    </div>
-    <div class="control">
-      <button class="button is-primary">c</button>
+    <div class="select">
+      <select id="" name="" v-model="editMode">
+	<option v-for="option in options" :value="option.value" :key="option.value">
+	  {{ option.text }}
+	</option>
+      </select>
     </div>
   </div>
 
@@ -19,7 +17,14 @@
 
 <script lang="ts">
 import { fabric } from 'fabric'
-import { ref, onMounted, toRefs, watch, defineComponent, computed } from 'vue'
+import { Ref, ref, onMounted, toRefs, watch, defineComponent, computed } from 'vue'
+
+enum EditMode {
+    AddPoint,
+    EditPoint,
+    DeletePoint,
+    Normal
+}
 
 export default defineComponent({
     props: {
@@ -32,6 +37,13 @@ export default defineComponent({
     setup(props) {
         const { imageElement } = toRefs(props)
 	const canvasElement = ref(null)
+	const editMode = ref(EditMode.Normal)
+	const options = [
+	    { text: "Add Point", value: EditMode.AddPoint },
+	    { text: "Edit Point", value: EditMode.EditPoint },
+	    { text: "Delete Point", value: EditMode.DeletePoint },
+	    { text: "Normal", value: EditMode.Normal }
+	]
 	const image = computed(() => {
 	    let img = new fabric.Image(imageElement.value)
 	    img.setControlsVisibility({
@@ -59,21 +71,23 @@ export default defineComponent({
 
         onMounted(() => {
             canvas = new fabric.Canvas(canvasElement.value)
-	    canvas.on('mouse:wheel', onMouseWheel(canvas))
-	    canvas.on('mouse:dbclick', onMouseDbclick(canvas))
+	    canvas.on('mouse:wheel', onMouseWheel(canvas, editMode))
+	    canvas.on('mouse:down', onMouseDbclick(canvas, editMode))
 	    onImageChange()
         })
 
         watch(image, onImageChange)
         return {
 	    canvasElement,
-	    imageElement
+	    imageElement,
+	    editMode,
+	    options
         }
     }
 })
 
 
-const onMouseWheel = (canvas: fabric.Canvas) => {
+const onMouseWheel = (canvas: fabric.Canvas, editMode: Ref<EditMode>) => {
     return (opt: any) => {
 	let delta = opt.e.deltaY
 	let zoom = canvas.getZoom()
@@ -88,11 +102,16 @@ const onMouseWheel = (canvas: fabric.Canvas) => {
     }
 }
 
-const onMouseDbclick = (canvas: fabric.Canvas) => {
+const onMouseDbclick = (canvas: fabric.Canvas, editMode: Ref<EditMode>) => {
     return (opt: any) => {
 	if (!canvas.viewportTransform) {
 	    throw 'canvas.viewportTransform is null'
 	}
+
+	if (editMode.value != EditMode.AddPoint) {
+	    return
+	}
+
 	let im = fabric.util.invertTransform(canvas.viewportTransform)
 	var p = new fabric.Point(opt.e.offsetX, opt.e.offsetY)
 	p = fabric.util.transformPoint(p, im)
