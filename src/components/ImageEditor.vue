@@ -2,14 +2,24 @@
 <div>
   <div class="field is-grouped">
     <div class="select">
-      <select id="" name="" v-model="editMode">
-	<option v-for="option in options" :value="option.value" :key="option.value">
+      <select id="" name="" v-model="settings.editMode">
+	<option v-for="option in editModeOptions" :value="option.value" :key="option.value">
 	  {{ option.text }}
 	</option>
       </select>
     </div>
+
+    <div class="contorl">
+      <input v-model="settings.pointSize" class="input" name="" type="number" min="5" max="50"/>
+    </div>
   </div>
 
+  <div>
+    <div v-for="c in circles">
+      left: {{c.left}}
+      top: {{c.top}}
+    </div>
+  </div>
   <canvas ref="canvasElement" width="800" height="600"></canvas>
 
 </div>
@@ -26,6 +36,11 @@ enum EditMode {
     Normal
 }
 
+type Settings = {
+    editMode: EditMode,
+    pointSize: Number
+}
+
 export default defineComponent({
     props: {
 	imageElement: {
@@ -37,8 +52,11 @@ export default defineComponent({
     setup(props) {
         const { imageElement } = toRefs(props)
 	const canvasElement = ref(null)
-	const editMode = ref(EditMode.Normal)
-	const options = [
+	const settings = ref({
+	    editMode: EditMode.Normal,
+	    pointSize: 5,
+	})
+	const editModeOptions = [
 	    { text: "Add Point", value: EditMode.AddPoint },
 	    { text: "Edit Point", value: EditMode.EditPoint },
 	    { text: "Delete Point", value: EditMode.DeletePoint },
@@ -59,20 +77,24 @@ export default defineComponent({
 	    })
 	    return img
 	})
-        let canvas: fabric.Canvas
-	// const getCircles = () => {
-	//     return canvas.getObjects().filter(o => o !== image.value)
-	// }
+
+
+        let canvas: Ref<fabric.Canvas> = ref(new fabric.Canvas(null))
+
+	const circles = computed(() => {
+	    return canvas.value.getObjects().filter(o => o !== image.value)
+	})
+
         const onImageChange = () => {
-	    canvas.clear()
+	    canvas.value.clear()
 	    // canvas.add(image)
-	    canvas.setBackgroundImage(image.value, canvas.renderAll.bind(canvas))
+	    canvas.value.setBackgroundImage(image.value, canvas.value.renderAll.bind(canvas.value))
         }
 
         onMounted(() => {
-            canvas = new fabric.Canvas(canvasElement.value)
-	    canvas.on('mouse:wheel', onMouseWheel(canvas, editMode))
-	    canvas.on('mouse:down', onMouseDbclick(canvas, editMode))
+            canvas.value = new fabric.Canvas(canvasElement.value)
+	    canvas.value.on('mouse:wheel', onMouseWheel(canvas.value, settings))
+	    canvas.value.on('mouse:down', onMouseDbclick(canvas.value, settings))
 	    onImageChange()
         })
 
@@ -80,14 +102,18 @@ export default defineComponent({
         return {
 	    canvasElement,
 	    imageElement,
-	    editMode,
-	    options
+	    editModeOptions,
+	    circles,
+	    settings,
+	    canvas
         }
     }
 })
 
 
-const onMouseWheel = (canvas: fabric.Canvas, editMode: Ref<EditMode>) => {
+
+
+const onMouseWheel = (canvas: fabric.Canvas, settings: Ref<Settings>) => {
     return (opt: any) => {
 	let delta = opt.e.deltaY
 	let zoom = canvas.getZoom()
@@ -102,13 +128,13 @@ const onMouseWheel = (canvas: fabric.Canvas, editMode: Ref<EditMode>) => {
     }
 }
 
-const onMouseDbclick = (canvas: fabric.Canvas, editMode: Ref<EditMode>) => {
+const onMouseDbclick = (canvas: fabric.Canvas, settings: Ref<Settings>) => {
     return (opt: any) => {
 	if (!canvas.viewportTransform) {
 	    throw 'canvas.viewportTransform is null'
 	}
 
-	if (editMode.value != EditMode.AddPoint) {
+	if (settings.value.editMode != EditMode.AddPoint) {
 	    return
 	}
 
@@ -117,16 +143,15 @@ const onMouseDbclick = (canvas: fabric.Canvas, editMode: Ref<EditMode>) => {
 	p = fabric.util.transformPoint(p, im)
 
 	let circle = new fabric.Circle({
-	    radius: 5 / canvas.getZoom(), fill: 'red',
+	    radius: 5 , fill: 'red',
 	    top: p.y,
-	    left: p.x
+	    left: p.x,
 	})
 
 	canvas.add(circle)
 	canvas.bringToFront(circle)
     }
 }
-
 
 </script>
 
