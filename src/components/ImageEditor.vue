@@ -110,9 +110,6 @@ export default defineComponent({
     }
 })
 
-
-
-
 const onMouseWheel = (canvas: fabric.Canvas, settings: Ref<Settings>) => {
     return (opt: any) => {
 	let delta = opt.e.deltaY
