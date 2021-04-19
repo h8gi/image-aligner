@@ -14,12 +14,6 @@
     </div>
   </div>
 
-  <div>
-    <div v-for="c in circles">
-      left: {{c.left}}
-      top: {{c.top}}
-    </div>
-  </div>
   <canvas ref="canvasElement" width="800" height="600"></canvas>
 
 </div>
